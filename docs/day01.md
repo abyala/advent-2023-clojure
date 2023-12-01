@@ -2,6 +2,7 @@
 
 * [Problem statement](https://adventofcode.com/2023/day/1)
 * [Solution code](https://github.com/abyala/advent-2023-clojure/blob/master/src/advent_2023_clojure/day01.clj)
+* [Alternate solution code](https://github.com/abyala/advent-2023-clojure/blob/master/src/advent_2023_clojure/day01_indexes.clj)
 
 ## Intro
 
@@ -96,3 +97,89 @@ The solution is still a transducer which applies the `calibration-value` functio
 them together, but now `solve` takes in an extra function to be run before `calibration-value`. For part 1, we don't
 want to do anything else, so we pass in `identity`. For part 2, we want to first call `replace-numeric-strings`.
 And thus we have a clean solution for day 1!
+
+## Alternate solution with index searches
+
+My original solution for part 2, which is a bit longer than the one I kept, involved playing with String indexes
+instead of modifying each line of text. Let's see how that worked.
+
+Knowing that the difference between parts 1 and 2 is whether we look for just numeric strings or also numeric names,
+let's start with two constants that represent sequences of tuples - the string to search for and the number it
+represents.
+
+```clojure
+(def numbers (map vector (map str (range 10)) (range 10)))
+(def numbers-and-names (into numbers (map vector ["one" "two" "three" "four" "five" "six" "seven" "eight" "nine"]
+                                          (range 1 10))))
+```
+
+`numbers` makes its sequence of vectors using the range of values from 0 to 9. The first element is `(map str n)` to
+stringify the number, and the second element is just the number. `numbers-and-names` adds additional values to the
+`numbers` sequence, this time mapping each name to its numeric value from 1 to 9.
+
+Now we need to find the numeric value of the first number within each line of text, whether that is the 10 values in
+`numbers` or the 19 in `numbers-and-names`. We'll use `index-of`, which uses Java's `String.index-of` method, on each
+value within the passed-in `search` function argument, but we'll need to record both the index and the value of the
+number. Then we'll find the lowest index and use its value.
+
+```clojure
+(defn find-first [s search]
+  (->> search
+       (keep (fn [[n v]] (when-let [idx (str/index-of s n)] [idx v])))
+       sort
+       first
+       second))
+```
+
+This function uses the `keep` function (equivalent of `Kotlin's mapNotNull` function) on each search vector. If it
+finds an index using `str/index-of`, it emits a new vector of `[idx v]` to show the first index that contained the
+numeric value. Then we sort the vectors, which sorts vectors in order of their elements, take the first one for the
+lowest index, and return the value in the second position.
+
+When that's done, we'll also need `find-last`, which is almost identical.
+
+```clojure
+(defn find-last [s search]
+  (->> search
+       (keep (fn [[n v]] (when-let [idx (str/last-index-of s n)] [idx v])))
+       sort
+       last
+       second))
+```
+
+Naturally, I don't like this duplication, so I refactored them to use a common `find-digit` function that expects the
+`str-fn` to use (`index-of` or `last-index-of`) and the `seq-fn` (`first` or `last`) within the sequence. `find-first`
+and `find-last` then become partial functions over `find-digit`.
+
+```clojure
+(defn find-digit [str-fn seq-fn s search]
+  (->> search
+       (keep (fn [[n v]] (when-let [idx (str-fn s n)] [idx v])))
+       sort
+       seq-fn
+       second))
+
+(def find-first (partial find-digit str/index-of first))
+(def find-last (partial find-digit str/last-index-of last))
+```
+
+Now we can build our `calibration-value` function, which takes in the `search` space and the string to examine. Since
+`find-first` and `find-last` return numbers, rather than stringifying them again, I just multiply the first digit by
+10 before adding it to the last digit.
+
+```clojure
+(defn calibration-value [search s]
+  (+ (* 10 (find-first s search)) (find-last s search)))
+```
+
+Finally, we can solve parts 1 and 2 together using the same `transduce` solution shown in part 1 above. Only now, 
+instead of calling using the transformation function `(map calibration-value)` we'll need to pass that function the
+search space with `(map #(calibration-value search %))`. Then `part1` uses `numbers`, and `part2` uses
+`numbers-and-names`.
+
+```clojure
+(defn solve [search input]
+  (transduce (map #(calibration-value search %)) + (str/split-lines input)))
+(def part1 (partial solve numbers))
+(def part2 (partial solve numbers-and-names))
+```
