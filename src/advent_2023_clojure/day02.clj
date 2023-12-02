@@ -2,11 +2,11 @@
   (:require [clojure.string :as str]))
 
 (defn parse-game [line]
-  (let [[_ game-num grab-str] (re-matches #"Game (\d+): (.*)" line)]
+  (let [[_ game-num & boxes] (re-seq #"\w+" line)]
     {:game-num (parse-long game-num)
-     :cubes (reduce (fn [acc [n cube]] (update acc (keyword cube) max (parse-long n)))
-                    {:red 0, :green 0, :blue 0}
-                    (partition 2 (re-seq #"\w+" grab-str)))}))
+     :cubes    (reduce (fn [acc [n cube]] (update acc (keyword cube) max (parse-long n)))
+                       {:red 0, :green 0, :blue 0}
+                       (partition 2 boxes))}))
 
 (defn playable? [{:keys [cubes]}]
   (= cubes (merge-with min cubes {:red 12, :green 13, :blue 14})))

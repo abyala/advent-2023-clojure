@@ -15,35 +15,33 @@ The input today is a list of strings representing games of pulling colored cubes
 back in for the next pull. These elves sure do know how to have a good time! Our task is to sum up the game numbers for
 all games that could be played with 12 red, 13 green, and 14 blue cubes. The way to simplify this (and which holds up
 in part 2), is to realize our parsed data doesn't need to remember every pull, but rather just the most of each cube
-type per game.
+type per game, which represents the minimum number of cubes of that color in the bag.
 
 So let's parse. Usually I do this with a few smaller functions, but I thought this one was easy enough as it was.
-We'll use two different regular expressions in this function.
+We'll use a trivial regular expression to handle most everything. The goal is to return a map of the game number, and
+a `:cubes` sub-map of each color to its minimum number of cubes.
 
 ```clojure
 (defn parse-game [line]
-  (let [[_ game-num grab-str] (re-matches #"Game (\d+): (.*)" line)]
+  (let [[_ game-num & boxes] (re-seq #"\w+" line)]
     {:game-num (parse-long game-num)
-     :cubes (reduce (fn [acc [n cube]] (update acc (keyword cube) max (parse-long n)))
-                    {:red 0, :green 0, :blue 0}
-                    (partition 2 (re-seq #"\w+" grab-str)))}))
+     :cubes    (reduce (fn [acc [n cube]] (update acc (keyword cube) max (parse-long n)))
+                       {:red 0, :green 0, :blue 0}
+                       (partition 2 boxes))}))
 ```
 
-The first step is to separate the game number from the description of the pulls. Stricly speaking, we could use
-indexed functions later and never parse the game number, but I prefer to know the game number so each parsed piece of
-data works correctly no matter how I store it. `re-matches` does a regular expression match, returning the entire
-matched string (which we ignore with the underscore binding), then the game number, and then everything else. The
-function will return a simple map with two keys, the `:game-num` and the `:cubes`, where again the latter is only the
-minimum number of cubes per color.
+The `re-seq` function returns a sequence of every match group within the string using the pattern, in this case the
+"word characters," so numbers and letters. The first two groups are  always the word `"Game"` and the game number,
+so we discard the first and bind the second to `game-num`. We want to keep the rest as a sequence so `& boxes`
+accomplishes this, sort of like a varargs. Then after parsing the game number into a long, it's time to prepare the
+cubes map.
 
-To prepare the cubes, we'll start with the `re-seq` function, which runs a regular expression and returns a sequence
-of all matching values. Here we use `#"\w` to return only "word characters," so numbers and letters. Thus "6 green, 
-2 blue; 1 red, 5 blue" becomes `("6" "green" "2 "blue" "1" "red" "5" "blue")`. Note once again that we don't care which
-pull had which cube colors. We wrap that sequence in `(partition 2)` to window the results, in this case to
-`(["6" "green"] ["2 "blue"] ["1" "red"] ["5" "blue"])`. Now we send that sequence into a `reduce` function, initialized
-with a map of zero red, green, and blue marbles. The reducing function updates the accumulated map at the cube color
-with the max of its current cube count and the latest draw. `(update acc (keyword cube) max (parse-long n))` does all
-the work, noting that we use each cube's keyword instead of string representation because we're good Clojurians.
+The cubes map will be a single reduction, initialized with a map of zero red, green, and blue cubes. For the input
+sequence, we window the `boxes` using `(partition 2 boxes)`, so `("6" "green" "2 "blue" "1" "red" "5" "blue")` becomes
+`(["6" "green"] ["2 "blue"] ["1" "red"] ["5" "blue"])`. Then the reducing function updates the accumulated map at the
+cube color with the max of its current cube count and the latest draw. `(update acc (keyword cube) max (parse-long n))`
+does all the work, noting that we use each cube's keyword instead of string representation because we're good
+Clojurians.
 
 Next, we write a predicate function to see if this game is possible with the 12 red, 13 green, and 14 blue cubes.
 
