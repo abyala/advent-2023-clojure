@@ -1,5 +1,5 @@
 (ns advent-2023-clojure.day03
-  (:require [abyala.advent-utils-clojure.core :refer [digit?]]
+  (:require [abyala.advent-utils-clojure.core :refer [digit? re-matcher-seq]]
             [abyala.advent-utils-clojure.point :as p]
             [clojure.string :as str]))
 
@@ -11,12 +11,9 @@
   ([input] (->> (str/split-lines input)
                 (map-indexed #(parse-numbers %2 %1))
                 (apply concat)))
-  ([line y] (let [m (re-matcher #"\d+" line)]
-              (loop [acc ()]
-                (if (.find m)
-                  (recur (conj acc {:value  (parse-long (.group m))
-                                    :points (set (map #(vector % y) (range (.start m) (.end m))))}))
-                  acc)))))
+  ([line y] (map (fn [{:keys [value start end]}] {:value (parse-long value)
+                                                  :points (set (map #(vector % y) (range start end)))})
+                 (re-matcher-seq #"\d+" line))))
 
 (defn parse-symbols [input]
   (keep (fn [[p v]] (when (engine-symbol? v) {:value v :point p}))

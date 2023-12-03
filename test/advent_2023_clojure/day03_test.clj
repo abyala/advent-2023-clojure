@@ -6,11 +6,11 @@
 (def puzzle-data (slurp "resources/day03-puzzle.txt"))
 
 (deftest part1-test
-  (are [input expected] (time (= (part1 input) expected))
+  (are [input expected] (= (part1 input) expected)
                         test-data 4361
                         puzzle-data 556057))
 
 (deftest part2-test
-  (are [input expected] (time (= (part2 input) expected))
+  (are [input expected] (= (part2 input) expected)
                         test-data 467835
                         puzzle-data 82824352))

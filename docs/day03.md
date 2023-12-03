@@ -130,3 +130,35 @@ adjacencies, but the performance didn't matter, so I went with the simpler view.
 results.
 
 Note: I did create a unified `solve` function for both parts 1 and 2, but it was hideous so I trashed it.
+
+## Refactored to stateless regex matcher
+
+I really didn't like having to use Java's stateful `Matcher` class, so I Conjurized it.  In my 
+[advent-utils-clojure repo](https://github.com/abyala/advent-utils-clojure), I added a new function `re-matcher-seq`
+into the [core.clj](https://github.com/abyala/advent-utils-clojure/blob/main/src/abyala/advent_utils_clojure/core.clj)
+namespace.
+
+```clojure
+(defn re-matcher-seq
+  "Returns a lazy sequence of maps from applying a regular expression `re` to the string `s`. Each returned map
+  will be of form `{:value v, :start x, :end y}` where `:value` is the text value from the captured group, and
+  `:start` and `:end` are the start and end indexes of that group's characters."
+  [re s]
+  (letfn [(next-value [m] (when (.find m)
+                            (cons {:value (.group m), :start (.start m), :end (.end m)}
+                                  (lazy-seq (next-value m)))))]
+    (next-value (re-matcher re s))))
+```
+
+This function essentially does what my old `parse-numbers` function did, but now it hides away that yucky matcher.
+Using a hidden inner recursive function called `next-value`, it returns a lazy sequence of maps of the form
+`{:value v, :start x, :end y}`. Armed with this function, the 2-arity version of `parse-numbers` looks much simpler,
+doing a simple `map` instead of a `loop-recur`.
+
+```clojure
+(defn parse-numbers
+  ; Omitting the 1-arity version
+  ([line y] (map (fn [{:keys [value start end]}] {:value (parse-long value)
+                                                  :points (set (map #(vector % y) (range start end)))})
+                 (re-matcher-seq #"\d+" line))))
+```
