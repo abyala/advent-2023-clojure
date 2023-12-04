@@ -3,9 +3,9 @@
             [clojure.set :as set]))
 
 (defn line-wins [line]
-  (letfn [(parse-numbers [s] (set (map parse-long (re-seq #"\d+" s))))]
-    (let [[_ winners mine] (re-seq #"[^:\|]+" line)]
-      (count (set/intersection (parse-numbers winners) (parse-numbers mine))))))
+  (let [parse-numbers (fn [s] (->> (re-seq #"\d+" s) (map parse-long) set))
+        [_ winners mine] (re-seq #"[^:\|]+" line)]
+    (count (set/intersection (parse-numbers winners) (parse-numbers mine)))))
 
 (defn line-points [line]
   (let [wins (line-wins line)]

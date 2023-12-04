@@ -22,12 +22,12 @@ so we'll parse and calculate at once.
 
 ```clojure
 (defn line-wins [line]
-  (letfn [(parse-numbers [s] (set (map parse-long (re-seq #"\d+" s))))]
-    (let [[_ winners mine] (re-seq #"[^:\|]+" line)]
-      (count (set/intersection (parse-numbers winners) (parse-numbers mine))))))
+  (let [parse-numbers (fn [s] (->> (re-seq #"\d+" s) (map parse-long) set))
+        [_ winners mine] (re-seq #"[^:\|]+" line)]
+    (count (set/intersection (parse-numbers winners) (parse-numbers mine)))))
 ```
 
-First, we'll make an inner function called `parse-numbers`, which takes in a string and returns a set of each number
+First, we'll make a local function called `parse-numbers`, which takes in a string and returns a set of each number
 that was extracted. It's quite simple - `(re-seq #"\d+" s)` is logic we've used in the past to return a sequence of
 numeric strings. We map each one using `parse-long` and then convert that sequence into a set. Yes, I could have
 represented that as a transducer, but even I have limits.
