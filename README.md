@@ -5,7 +5,7 @@
 | 1     | Trebuchet?!    | [source](src/advent_2023_clojure/day01.clj)<br/>[alternate solution source](src/advent_2023_clojure/day01_indexes.clj) | [blog](docs/day01.md) |
 | 2     | Cube Conundrum | [source](src/advent_2023_clojure/day02.clj)                                                                            | [blog](docs/day02.md) |
 | 3     | Gear Ratios    | [source](src/advent_2023_clojure/day03.clj)                                                                            | [blog](docs/day03.md) |
-| 4     |                | source                                                                                                                 | blog                  |
+| 4     | Scratchcards   | [source](src/advent_2023_clojure/day04.clj)                                                                            | [blog](docs/day04.md) |
 | 5     |                | source                                                                                                                 | blog                  |
 | 6     |                | source                                                                                                                 | blog                  |
 | 7     |                | source                                                                                                                 | blog                  |
