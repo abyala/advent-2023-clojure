@@ -8,9 +8,7 @@
 (defn gear-symbol [c] (= c \*))
 
 (defn parse-numbers
-  ([input] (->> (str/split-lines input)
-                (map-indexed #(parse-numbers %2 %1))
-                (apply concat)))
+  ([input] (transduce (map-indexed #(parse-numbers %2 %1)) concat (str/split-lines input)))
   ([line y] (map (fn [{:keys [value start end]}] {:value (parse-long value)
                                                   :points (set (map #(vector % y) (range start end)))})
                  (re-matcher-seq #"\d+" line))))

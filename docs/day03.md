@@ -29,6 +29,7 @@ Oh, I also decided to parse the input twice, once for numbers and once for symbo
 
 ```clojure
 (defn parse-numbers
+  ([input] (transduce (map-indexed #(parse-numbers %2 %1)) concat (str/split-lines input)))
   ([input] (->> (str/split-lines input)
                 (map-indexed #(parse-numbers %2 %1))
                 (apply concat)))
@@ -41,17 +42,17 @@ Oh, I also decided to parse the input twice, once for numbers and once for symbo
 ```
 
 Since I knew I would be parsing the input twice, I made `parse-numbers` multi-arity. The 1-argument instance takes in
-the entire input data, and the 2-argument instance parses a single line. In the 1-argument function, we split the input
-by line, call the 2-argument instance with the line string and the line number, and then concatenate the results so we
-have a single sequence of numbers. To parse each line of text into a collection of numbers, I used regular expressions
-again, this time leveraging Java's **stateful** `Matcher` class. Mutable state in Clojure is ugly and this code really
-showcases why we don't like mutable state. Anyway, we create the matcher `m` and the run a `loop` to accumulate the
-results as we mutate it. Whenever `Matcher.find()` returns `true`, we can call `.group` to get its value, `.start` to
-get the starting index in the string, and `.end` to get the exclusive ending index. From this, we can form the `:value`
-of the number by parsing the `.group` value, and we can make the `:points` set by creating vectors from each `x` value
-in the start-to-end range, plus the `y` value passed in as a function argument. When we loop and `Matcher.find()`
-returns false, we return the accumulator. There's a good chance I'm going to make my own lazy Clojure wrapper in a few
-minutes since I don't like this Java-ish code.
+the entire input data, and the 2-argument instance parses a single line. In the 1-argument function, we transduce the
+input after splitting it by line, transforming it by calling the 2-argument instance with the line string and the line
+number, and then collecting the results by concatenating them into a single sequence of numbers. To parse each line of
+text into a collection of numbers, I used regular expressions again, this time leveraging Java's **stateful** `Matcher`
+class. Mutable state in Clojure is ugly and this code really showcases why we don't like it. Anyway, we create the
+matcher `m` and the run a `loop` to accumulate the results as we mutate it. Whenever `Matcher.find()` returns `true`,
+we can call `.group` to get its value, `.start` to get the starting index in the string, and `.end` to get the exclusive
+ending index. From this, we can form the `:value` of the number by parsing the `.group` value, and we can make the 
+`:points` set by creating vectors from each `x` value in the start-to-end range, plus the `y` value passed in as a
+function argument. When we loop and `Matcher.find()` returns false, we return the accumulator. Foreshadow: later in this
+document, I write my own lazy Clojure wrapper to conceal this ugly Java-ish code.
 
 Now that that's done, we can parse the symbols. The target is another collection of maps of `{:value \* :point [x y]}`.
 This one is easier to handle.
