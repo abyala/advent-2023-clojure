@@ -237,3 +237,29 @@ function to apply to the original list of seeds, and then have `part1` and `part
 
 And that's it! The rewrite was an adventure, but in the end, the solution looks clean to me, and it's incredibly fast,
 so I'll call it a win.
+
+## Minor refactoring
+
+I decided that since I keep seeing the pattern for parsing a list of numeric strings into longs, I would create a new
+`split-longs` function and put it into my `abyala.advent-utils-clojure.core` repo, for all to enjoy.
+
+```clojure
+; abyala.advent-utils-clojure.core namespace
+(defn split-longs
+  "Given an input string, returns a sequence of all numbers extracted, coerced into longs. Any delimiter is acceptable,
+  including whitespace, symbols, or any non-numeric character."
+  [input]
+  (map parse-long (re-seq #"\d+" input)))
+```
+
+With this in place, we can slightly simplify our two main parse functions. I think this is expressive and easy enough
+to read, and eliminates two regular expressions from the code. Plus this goes nicely with the existing
+`split-blank-line-groups input` function.
+
+```clojure
+(defn parse-seeds [line] (split-longs (first line)))
+
+(defn parse-rule [line]
+  (let [[dest src len] (split-longs line)]
+    {:low src, :dest dest, :len len}))
+```

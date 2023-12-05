@@ -1,11 +1,10 @@
 (ns advent-2023-clojure.day05
-  (:require [abyala.advent-utils-clojure.core :refer [split-blank-line-groups]]))
+  (:require [abyala.advent-utils-clojure.core :refer :all]))
 
-(defn parse-seeds [line]
-  (map parse-long (re-seq #"\d+" (first line))))
+(defn parse-seeds [line] (split-longs (first line)))
 
 (defn parse-rule [line]
-  (let [[dest src len] (map parse-long (re-seq #"\d+" line))]
+  (let [[dest src len] (split-longs line)]
     {:low src, :dest dest, :len len}))
 
 (defn parse-ruleset [lines]
