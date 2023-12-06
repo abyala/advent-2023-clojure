@@ -105,3 +105,47 @@ in the diagram above, the new value is twice `num-winners` minus `count-at-top`.
 
 Making this change drops the running time of the large dataset in part 2 by about two-thirds, and a <500 ms response
 time is just lovely to me.
+
+## Rewrite using algebra
+
+When my friend and I were working on the problem, I had written down on paper that there may be another way to express
+`distance-moved`, since if `h=hold-time` and `t=total-time`, then my function as math would be `h*(t-h)` which could
+be represented as `th-h^2`. I thought "huh, that's interesting but harder to read," and I left it alone.
+
+Before going to bed, I was thinking more about the data and the fact that it was parabolic in nature, increasing to a
+certain level before dropping back down again, but again I didn't figure out what to do about it.
+
+Then this morning, I realized that we were so close, and that if I looked at the function with `p=previous-best` as
+`th-h^2>p` or `-h^2+th-p>0` then we had the quadratic formula! All I'd need to do is calculate the quadratic factors of
+the equation to find the lowest and highest values that solved the equation, and manipulate them slightly to work with
+integers instead of doubles. So let's do that!
+
+```clojure
+; abyala.advent-utils-clojure.math namespace
+(defn quadratic-roots [a b c]
+  (map (fn [op] (/ (op (- b) (m/sqrt (- (* b b) (* 4 a c)))) (* 2 a)))
+       [+ -]))
+```
+
+The factors of a quadratic equation are `(-b +- sqrt(b^2-4ac))/2a`. So I mapped `+` and `-` to the rest of the function,
+which returns our values, or the "y-intercepts" in the algebraic sense. I put this function into my common
+`advent-utils-clojure` repository within the `math` namespace.
+
+Armed with this and our equation `-h^2+th-p>0`, rewriting `num-winners` is really quite simple.
+
+```clojure
+(defn num-winners [total-time previous-best]
+  (let [[low-root high-root] (sort (m/quadratic-roots -1 total-time (- previous-best)))
+        low (inc (int low-root))
+        high (dec (int (ceil high-root)))]
+    (inc (- high low))))
+```
+
+We calculate the quadratic roots and sort them, binding the two values of type `double` into `low-root` and `high-root`.
+These values represent the values that _equal_ zero, but we only want hold times that `exceed` the previous best time.
+So the lowest acceptable hold time is one greater than the integer value of `low-root`, and the highest acceptable hold
+time is one lower than the integer value of the ceiling of `high-root`; if the `high-root` were 5.6, then 5 would be the
+highest hold time. Then to count the number of winners, it's the difference between `high` and `low`, but we increment
+the value again since both values are inclusive.
+
+The result is a tiny and lightning fast solution. Hooray for math!
