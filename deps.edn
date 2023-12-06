@@ -1,2 +1,2 @@
 {:deps
- {io.github.abyala/advent-utils-clojure {:git/sha "84c36791f65d0f99b343676a307543b3fab8d101"}}}
+ {io.github.abyala/advent-utils-clojure {:git/sha "95537614b317fc9880f66116e3881758868a69d1"}}}
