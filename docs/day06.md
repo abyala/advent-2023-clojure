@@ -2,6 +2,7 @@
 
 * [Problem statement](https://adventofcode.com/2023/day/6)
 * [Solution code](https://github.com/abyala/advent-2023-clojure/blob/master/src/advent_2023_clojure/day06.clj)
+* [Algebraic solution code](https://github.com/abyala/advent-2023-clojure/blob/main/src/advent_2023_clojure/day06_algebra.clj)
 
 ## Intro
 
