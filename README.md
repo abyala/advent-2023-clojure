@@ -9,7 +9,7 @@
 | 5     | If You Give A Seed A Fertilizer | [source](src/advent_2023_clojure/day05.clj)                                                                            | [blog](docs/day05.md) |
 | 6     | Wait For It                     | [source](src/advent_2023_clojure/day06.clj)<br/>[algebraic solution source](src/advent_2023_clojure/day06_algebra.clj) | [blog](docs/day06.md) |
 | 7     | Camel Cards                     | [source](src/advent_2023_clojure/day07.clj)                                                                            | [blog](docs/day07.md) |
-| 8     |                                 | source                                                                                                                 | blog                  |
+| 8     | Haunted Wasteland               | [source](src/advent_2023_clojure/day08.clj)                                                                            | [blog](docs/day08.md) |
 | 9     |                                 | source                                                                                                                 | blog                  |
 | 10    |                                 | source                                                                                                                 | blog                  |
 | 11    |                                 | source                                                                                                                 | blog                  |
