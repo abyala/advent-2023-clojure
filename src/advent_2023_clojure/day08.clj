@@ -13,12 +13,10 @@
                            mappings)}))
 
 (defn all-steps [instructions paths start-loc]
-  (letfn [(next-step [loc turns]
-            (let [[turn & turns'] turns
-                  loc' (paths [loc turn])]
-              (cons loc (lazy-seq (next-step loc' turns')))))]
+  (letfn [(next-step [loc turns] (let [[turn & turns'] turns
+                                       loc' (paths [loc turn])]
+                                   (cons loc (lazy-seq (next-step loc' turns')))))]
     (next-step start-loc (cycle instructions))))
-
 
 (defn steps-to-end [end-loc? instructions paths start-loc]
   (index-of-first #(end-loc? %)

@@ -10,7 +10,7 @@
 | 6     | Wait For It                     | [source](src/advent_2023_clojure/day06.clj)<br/>[algebraic solution source](src/advent_2023_clojure/day06_algebra.clj) | [blog](docs/day06.md) |
 | 7     | Camel Cards                     | [source](src/advent_2023_clojure/day07.clj)                                                                            | [blog](docs/day07.md) |
 | 8     | Haunted Wasteland               | [source](src/advent_2023_clojure/day08.clj)                                                                            | [blog](docs/day08.md) |
-| 9     |                                 | source                                                                                                                 | blog                  |
+| 9     | Mirage Maintenance              | [source](src/advent_2023_clojure/day09.clj)                                                                            | [blog](docs/day09.md) |
 | 10    |                                 | source                                                                                                                 | blog                  |
 | 11    |                                 | source                                                                                                                 | blog                  |
 | 12    |                                 | source                                                                                                                 | blog                  |
