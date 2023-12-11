@@ -12,7 +12,7 @@
 | 8     | Haunted Wasteland               | [source](src/advent_2023_clojure/day08.clj)                                                                            | [blog](docs/day08.md) |
 | 9     | Mirage Maintenance              | [source](src/advent_2023_clojure/day09.clj)                                                                            | [blog](docs/day09.md) |
 | 10    | Pipe Maze                       | [source](src/advent_2023_clojure/day10.clj)                                                                            | [blog](docs/day10.md) |
-| 11    |                                 | source                                                                                                                 | blog                  |
+| 11    | Cosmic Expansion                | [source](src/advent_2023_clojure/day11.clj)                                                                            | [blog](docs/day11.md) |
 | 12    |                                 | source                                                                                                                 | blog                  |
 | 13    |                                 | source                                                                                                                 | blog                  |
 | 14    |                                 | source                                                                                                                 | blog                  |
