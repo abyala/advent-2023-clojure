@@ -11,7 +11,7 @@
 | 7     | Camel Cards                     | [source](src/advent_2023_clojure/day07.clj)                                                                            | [blog](docs/day07.md) |
 | 8     | Haunted Wasteland               | [source](src/advent_2023_clojure/day08.clj)                                                                            | [blog](docs/day08.md) |
 | 9     | Mirage Maintenance              | [source](src/advent_2023_clojure/day09.clj)                                                                            | [blog](docs/day09.md) |
-| 10    |                                 | source                                                                                                                 | blog                  |
+| 10    | Pipe Maze                       | [source](src/advent_2023_clojure/day10.clj)                                                                            | [blog](docs/day10.md) |
 | 11    |                                 | source                                                                                                                 | blog                  |
 | 12    |                                 | source                                                                                                                 | blog                  |
 | 13    |                                 | source                                                                                                                 | blog                  |
