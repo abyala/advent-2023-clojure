@@ -82,24 +82,30 @@ Now we'll create `search-space-matches`, which takes in a `search-space` and `gr
 `:count` is the number of matches that reduced to that that substring remainder.
 
 ```clojure
+; abyala.advent-utils-clojure.core namespace
+(defn repeat-string [n s] (apply str (repeat n s)))
+
 (defn drop-leading-dots [s] (apply str (drop-while (partial = \.) s)))
 
 (def search-space-matches
   (memoize (fn [search-space group]
-             (let [bad-pattern (re-pattern (str "#{" (inc group) "}"))]
+             (let [too-many (repeat-string (inc group) "#")]
                (->> (range (- (count search-space) group -1))
                     (remove #(let [replaced-str (str/replace (subs search-space % (+ % group)) "?" "#")
-                                   s (str (subs search-space 0 %) replaced-str (subs-to-end search-space (+ % group) (inc (+ % group))))]
+                                   after-replacement (subs-to-end search-space (+ % group) (+ % group 1))
+                                   s (str (subs search-space 0 %) replaced-str after-replacement)]
                                (or (str/includes? replaced-str ".")
-                                   (re-find bad-pattern s))))
+                                   (str/includes? s too-many))))
                     (map (comp drop-leading-dots #(subs-to-end search-space (+ % group 1))))
                     (frequencies))))))
 ```
 
-First off, `drop-leading-dots` is a simple function that removes all periods from the front of a string; we'll need
-this to normalize the substrings after removing their matches. The other thing to note with `search-space-matches` is
-that we memoize the function, meaning that Clojure will cache the return value for each unique set of input arguments.
-This cut the running time of the solution by about one third, which was a little over a second.
+First off, there are two simple functions. `repeat-string` is new in the `core` library, and it simply repeats an 
+input value `n` times and returns it as a string. Then `drop-leading-dots` is another simple function that removes all
+periods from the front of a string; we'll need this to normalize the substrings after removing their matches. The other
+thing to note with `search-space-matches` is that we memoize the function, meaning that Clojure will cache the return
+value for each unique set of input arguments. This cut the running time of the solution by about one third, which was
+a little over a second.
 
 The memoized function `search-space-matches` starts by creating `bad-pattern`, a regex that represents having too many
 broken spring in the sequence. If `group` is `2`, then `bad-pattern` would be the regex `"#{3}"`. Then the function
@@ -143,12 +149,11 @@ returns the total number of arrangements for _all_ groups.
 
 (def num-arrangements
   (memoize (fn [s groups]
-             (cond
-               (success? s groups) 1
-               (dead-end? s groups) 0
-               :else (transduce (map (fn [[leftover n]] (* n (num-arrangements leftover (rest groups)))))
-                                +
-                                (replace-next-search-space s groups))))))
+             (cond (success? s groups) 1
+                   (dead-end? s groups) 0
+                   :else (transduce (map (fn [[leftover n]] (* n (num-arrangements leftover (rest groups)))))
+                                    +
+                                    (replace-next-search-space s groups))))))
 ```
 
 First off, we'll make two helper functions, `dead-end?` and `success?`, both of which take in both `s` and `groups`.

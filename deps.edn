@@ -1,3 +1,3 @@
 {:deps
- {io.github.abyala/advent-utils-clojure {:git/sha "485d4ef45d4ce8352128812e54cdefd5b060ee27"}
+ {io.github.abyala/advent-utils-clojure {:git/sha "cf5c3de28eba8af2a0d02d5bad3ddb70d4904d76"}
   org.clojure/math.numeric-tower {:mvn/version "0.0.5"}}}
