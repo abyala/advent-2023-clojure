@@ -14,7 +14,7 @@
 | 10    | Pipe Maze                       | [source](src/advent_2023_clojure/day10.clj)                                                                            | [blog](docs/day10.md) |
 | 11    | Cosmic Expansion                | [source](src/advent_2023_clojure/day11.clj)                                                                            | [blog](docs/day11.md) |
 | 12    |                                 | source                                                                                                                 | blog                  |
-| 13    |                                 | source                                                                                                                 | blog                  |
+| 13    | Point of Incidence              | [source](src/advent_2023_clojure/day13.clj)                                                                            | [blog](docs/day13.md) |
 | 14    |                                 | source                                                                                                                 | blog                  |
 | 15    |                                 | source                                                                                                                 | blog                  |
 | 16    |                                 | source                                                                                                                 | blog                  |
