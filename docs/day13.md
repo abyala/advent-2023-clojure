@@ -35,37 +35,32 @@ up element of the two lists without making us create a merged tuple ourselves. A
 elements from both lists to apply; if we ran `(map + [1 2 3] [10 11 12 13 14])`, it would only combine `[1 2 3]` and
 `[10 11 12]` giving us the output `(11 13 15)`.
 
-Now let's implement `vertical-mirror-index`, which takes in pattern and returns all indexes of that pattern such that
+Now let's implement `vertical-mirror-indexes`, which takes in pattern and returns all indexes of that pattern such that
 all rows can mirror along the index. We only expect up to one index will be a vertical mirror, but I have a hunch that
 allowing for more than one will benefit us soon. Foreshadowing!
 
 ```clojure
-(defn vertical-mirror-index [pattern]
-  (let [first-line (first pattern)
-        possible-indexes (filter #(mirror? first-line %) (range 1 (count first-line)))]
-    (filter (fn [idx] (every? #(mirror? % idx) pattern)) possible-indexes)))
+(defn vertical-mirror-indexes [pattern]
+  (filter (fn [idx] (every? #(mirror? % idx) pattern))
+          (range 1 (count (first pattern)))))
 ```
 
-This function first checks the first line to see which indexes there are mirrors; a mirror only exists if all rows in
-the pattern mirrors on that index, which means that must apply to at least row 1. We use `(range 1 (count first-line))`
-because the mirror can't be at index 0, as there are no characters to the left of it. We `filter` all of those indexes
-where `mirror?` is true for the first line. Then from those possible indexes, we filter them such that every row in
-the pattern is also a mirror, using `(every? #(mirror? % idx) pattern)`.
+This function creates a range of all possible indexes that could be mirrors, namely starting from 1 and going to right
+before the last character. There's no reason to look at index 0, since nothing is to the left. Given this index range,
+we `filter` them to find the one such that every line in the pattern says that index is a mirror.
 
 The `horizontal-mirror-indexes` is almost the same, except we need to do a little work to read columns instead of rows.
 
 ```clojure
 (defn horizontal-mirror-indexes [pattern]
-  (let [pattern-column (fn [idx] (map #(get % idx) pattern))
-        first-column (pattern-column 0)
-        possible-indexes (filter (partial mirror? first-column) (range 1 (count first-column)))]
-    (filter (fn [idx] (every? #(mirror? % idx)
-                              (map #(pattern-column %) (range (count (first pattern)))))) possible-indexes)))
+  (let [columns (map (fn [idx] (map #(get % idx) pattern)) (range (count (first pattern))))]
+    (filter (fn [idx] (every? #(mirror? % idx) columns))
+            (range 1 (count (first columns))))))
 ```
 
-First, we make an internal function `pattern-column`, which returns the column of characters corresponding to the
-`nth` index in each row of the pattern. Once we have that, it's pretty much a copy-paste job from
-`vertical-mirror-indexes`.
+First, we create the binding `columns` by mapping each indexed character in the first row of the pattern to that
+value mapped on every line; this returns the `nth` index in each row of the pattern. Once we have that, it's pretty
+much a copy-paste job from `vertical-mirror-indexes`.
 
 Did someone say copy-paste? That's completely unacceptable. Let's bring those two functions together using a common
 `mirror-indexes` function, recognizing that it's actually identical to `vertical-mirror-indexes`. I could instead just have
@@ -74,9 +69,8 @@ Did someone say copy-paste? That's completely unacceptable. Let's bring those tw
 
 ```clojure
 (defn mirror-indexes [lines]
-  (let [first-line (first lines)
-        possible-indexes (filter #(mirror? first-line %) (range 1 (count first-line)))]
-    (filter (fn [idx] (every? #(mirror? % idx) lines)) possible-indexes)))
+  (filter (fn [idx] (every? #(mirror? % idx) lines))
+          (range 1 (count (first lines)))))
 
 (defn vertical-mirror-indexes [pattern]
   (mirror-indexes pattern))

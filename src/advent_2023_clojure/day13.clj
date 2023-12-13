@@ -7,9 +7,8 @@
     (every? identity (map = (reverse left) right))))
 
 (defn mirror-indexes [lines]
-  (let [first-line (first lines)
-        possible-indexes (filter #(mirror? first-line %) (range 1 (count first-line)))]
-    (filter (fn [idx] (every? #(mirror? % idx) lines)) possible-indexes)))
+  (filter (fn [idx] (every? #(mirror? % idx) lines))
+          (range 1 (count (first lines)))))
 
 (defn vertical-mirror-indexes [pattern]
   (mirror-indexes pattern))
