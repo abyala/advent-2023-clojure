@@ -13,7 +13,7 @@
 | 9     | Mirage Maintenance              | [source](src/advent_2023_clojure/day09.clj)                                                                            | [blog](docs/day09.md) |
 | 10    | Pipe Maze                       | [source](src/advent_2023_clojure/day10.clj)                                                                            | [blog](docs/day10.md) |
 | 11    | Cosmic Expansion                | [source](src/advent_2023_clojure/day11.clj)                                                                            | [blog](docs/day11.md) |
-| 12    |                                 | source                                                                                                                 | blog                  |
+| 12    | Hot Springs                     | [source](src/advent_2023_clojure/day12.clj)                                                                            | [blog](docs/day12.md) |
 | 13    | Point of Incidence              | [source](src/advent_2023_clojure/day13.clj)                                                                            | [blog](docs/day13.md) |
 | 14    |                                 | source                                                                                                                 | blog                  |
 | 15    |                                 | source                                                                                                                 | blog                  |
