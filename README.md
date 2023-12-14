@@ -15,7 +15,7 @@
 | 11    | Cosmic Expansion                | [source](src/advent_2023_clojure/day11.clj)                                                                            | [blog](docs/day11.md) |
 | 12    | Hot Springs                     | [source](src/advent_2023_clojure/day12.clj)                                                                            | [blog](docs/day12.md) |
 | 13    | Point of Incidence              | [source](src/advent_2023_clojure/day13.clj)                                                                            | [blog](docs/day13.md) |
-| 14    |                                 | source                                                                                                                 | blog                  |
+| 14    | Parabolic Reflector Dish        | [source](src/advent_2023_clojure/day14.clj)                                                                            | [blog](docs/day14.md) |
 | 15    |                                 | source                                                                                                                 | blog                  |
 | 16    |                                 | source                                                                                                                 | blog                  |
 | 17    |                                 | source                                                                                                                 | blog                  |
