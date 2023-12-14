@@ -1,10 +1,10 @@
-(ns advent-2023-clojure.day14
+(ns advent-2023-clojure.day14-protocols
   (:require [clojure.string :as str]
             [abyala.advent-utils-clojure.point :as p]))
 
 (defn parse-input [input]
   (let [flipped (->> input str/split-lines reverse (str/join "\n"))
-        all-points (update-keys (p/parse-to-char-coords-map flipped) (partial mapv inc))
+        all-points (update-keys (p/parse-to-char-coords-map flipped) #(update % 1 inc))
         rounded-rocks (set (keep (fn [[p c]] (when (= c \O) p)) all-points))
         cube-shaped-rocks (set (keep (fn [[p c]] (when (= c \#) p)) all-points))
         max-x (transduce (map first) max 0 (keys all-points))
@@ -14,28 +14,38 @@
 (defn occupied? [platform p]
   ((some-fn (:rounded platform) (:cube platform)) p))
 
-(defn- slide [rock-sorter range-creator platform]
+(defprotocol SlideStrategy
+  (rock-sorter [this])
+  (range-creator [this platform p]))
+
+(defn- slide [strategy platform]
   (let [slide-rock (fn [acc p] (let [acc' (update acc :rounded disj p)]
-                                 (if-some [p' (->> (range-creator acc p)
+                                 (if-some [p' (->> (range-creator strategy acc p)
                                                    (take-while #(not (occupied? acc' %)))
                                                    last)]
                                    (update acc' :rounded conj p')
                                    acc)))]
-    (reduce (partial slide-rock) platform (sort-by rock-sorter (:rounded platform)))))
+    (reduce (partial slide-rock) platform (sort-by (rock-sorter strategy) (:rounded platform)))))
 
-(defn slide-north [platform]
-  (slide (comp - second)
-         (fn [{:keys [max-y]} [x y]] (map vector (repeat x) (range (inc y) (inc max-y)))) platform))
+(def slide-north
+  (partial slide (reify SlideStrategy
+                   (rock-sorter [_] (comp - second))
+                   (range-creator [_ {:keys [max-y]} [x y]] (map vector (repeat x) (range (inc y) (inc max-y)))))))
 
-(defn slide-west [platform]
-  (slide first (fn [_ [x y]] (map vector (range (dec x) 0 -1) (repeat y))) platform))
+(def slide-west
+  (partial slide (reify SlideStrategy
+                   (rock-sorter [_] first)
+                   (range-creator [_ _ [x y]] (map vector (range (dec x) -1 -1) (repeat y))))))
 
-(defn slide-south [platform]
-  (slide second (fn [_ [x y]] (map vector (repeat x) (range (dec y) 0 -1))) platform))
+(def slide-south
+  (partial slide (reify SlideStrategy
+                   (rock-sorter [_] second)
+                   (range-creator [_ _ [x y]] (map vector (repeat x) (range (dec y) 0 -1))))))
 
-(defn slide-east [platform]
-  (slide (comp - first)
-         (fn [{:keys [max-x]} [x y]] (map vector (range (inc x) (inc max-x)) (repeat y))) platform))
+(def slide-east
+  (partial slide (reify SlideStrategy
+                   (rock-sorter [_] (comp - first))
+                   (range-creator [_ {:keys [max-x]} [x y]] (map vector (range (inc x) (inc max-x)) (repeat y))))))
 
 (defn rock-cycle [platform]
   (-> platform slide-north slide-west slide-south slide-east))

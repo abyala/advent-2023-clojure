@@ -18,6 +18,8 @@ I parse from the top-left, meaning that the bottom-left corner is `[0 -y]` where
 Why is the left-most x-value a 0 instead of a 1? Because I'm used to zero-indexing things and I don't want to go back
 and change everything. Maybe if I edit this tomorrow I'll swap it around.
 
+UPDATE: Nope, That was silly. Both the x- and y-axis values are 1-indexed now. The bottom-left corner is `[1 1]`.
+
 In today's puzzle, a lot of the complexity shows up in the `parse-input` function for once. The goal is to read the
 input string and create a map of `{:rounded #{[x y]}, :cube #{[x y]}, :max-x m, :max-y n}`. The `:rounded` and `:cube`
 keywords point to sets of `[x y]` coordinates where those rocks reside, while `max-x` and `max-y` represent the
@@ -38,10 +40,10 @@ Let's take this nice and slowly. First, let's map every character in the input s
 coordinates. To read from the bottom-up, `flipped` splits the string by line, reverses them, and puts them back into
 a single string again. Why do all that? Because `p/parse-to-char-coords-map` already expects a single string and for a
 trivial inefficiency, I avoided writing a lot of code. Now `parse-to-char-coords-map` returns a map of `{[x y] c}`
-using the corrected, upside-down `y` values we want, but they're still 0-indexed. So to fix that, we call
-`(update-keys m #(update % 1 inc))`; the keys of the map are of the format `[x y]`, so `(update % 1 inc)` calls the
-`inc` function on the second value (index=1) of each key. Pretty snazzy. We'll keep that binding of `all-points`
-because we'll need it several timews.
+using the corrected, upside-down `y` values we want, but everything is still 0-indexed. So to fix that, we call
+`(update-keys m (partial mapv inc)`; the keys of the map are of the format `[x y]`, so `(partial mapv inc)` calls the
+`inc` function on both values (`x` and `y`) of each key. Pretty snazzy. We'll keep that binding of `all-points`
+because we'll need it several times.
 
 Now let's prepare each value in our map. `rounded-rocks` and `cube-shaped-rocks` both sift through `all-points`, 
 checking when the character value `c` is either `\O` or `\#`, keeping just the point `p` in each case. Both values 
@@ -110,7 +112,7 @@ handle this. Sliding in each of the four directions should all work the same way
 we need to sort the rocks differently (for instance, `slide-north` sorted in decreasing `y` values, while `slide-west`
 should sort in increasing `x` values), and we need to create the sequence of available coordinates differently
 (`slide-north` locks `x` while `y` ranges from one above `y` to `max-y`, while `slide-west` locks `y` and `x` ranges
-from one below `x` to 0).
+from one below `x` to 1).
 
 We'll use a common `slide` function that takes in these two worker functions, and then define `slide-north`,
 `slide-west`, `slide-south`, and `slide-east` to call `slide`. I considered making a Clojure protocol for the four 
@@ -131,7 +133,7 @@ slide functions, and indeed I might still do that later. But for now, these are 
          (fn [{:keys [max-y]} [x y]] (map vector (repeat x) (range (inc y) (inc max-y)))) platform))
 
 (defn slide-west [platform]
-  (slide first (fn [_ [x y]] (map vector (range (dec x) -1 -1) (repeat y))) platform))
+  (slide first (fn [_ [x y]] (map vector (range (dec x) 0 -1) (repeat y))) platform))
 
 (defn slide-south [platform]
   (slide second (fn [_ [x y]] (map vector (repeat x) (range (dec y) 0 -1))) platform))
