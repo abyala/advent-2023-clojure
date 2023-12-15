@@ -144,7 +144,7 @@ lo and behold, using `transduce` _within_ the `reduce` function fits the bill pe
 
 So, which is better? I don't know. I suppose the vector solution is a bit easier to interpret since `reduce-kv` is
 a pretty way to get to the vector's index and its values, but we accomplish the same thing with the map version if we
-first sorted the `[key value]` values by their keys.
+first sort the `[key value]` entries by their keys.
 
 ```clojure
 ; This is the vector version
