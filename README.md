@@ -17,7 +17,7 @@
 | 13    | Point of Incidence              | [source](src/advent_2023_clojure/day13.clj)                                                                            | [blog](docs/day13.md) |
 | 14    | Parabolic Reflector Dish        | [source](src/advent_2023_clojure/day14.clj)                                                                            | [blog](docs/day14.md) |
 | 15    | Lens Library                    | [source](src/advent_2023_clojure/day15.clj)                                                                            | [blog](docs/day15.md) |
-| 16    |                                 | source                                                                                                                 | blog                  |
+| 16    | The Floor Will Be Lava          | [source](src/advent_2023_clojure/day16.clj)                                                                            | [blog](docs/day16.md) |
 | 17    |                                 | source                                                                                                                 | blog                  |
 | 18    |                                 | source                                                                                                                 | blog                  |
 | 19    |                                 | source                                                                                                                 | blog                  |
