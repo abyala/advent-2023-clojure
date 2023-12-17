@@ -95,31 +95,32 @@ Ok, we're making good progress. Let's create the function `move-step-range`, whi
 We'll need this to be flexible in part 2.
 
 ```clojure
+(defn walk-from-option [island option]
+  (let [{:keys [p dir cost]} option]
+    (letfn [(next-step [from-p from-c] (let [p' (move from-p dir)
+                                             cost' (get-in island [:points p'])]
+                                         (when cost'
+                                           (cons (option-of island p' dir (+ from-c cost'))
+                                                 (lazy-seq (next-step p' (+ from-c cost')))))))]
+      (next-step p cost))))
+
 (defn move-step-range [min-steps max-steps island option]
-  (let [{:keys [p dir cost]} option
-        turns (turn90 dir)]
-    (first (reduce (fn [[options prev-p prev-c :as acc] step-num]
-                     (let [p' (move prev-p dir)]
-                       (if-some [cost ((:points island) p')]
-                         (let [cost' (+ prev-c cost)
-                               options' (if (< step-num min-steps)
-                                          options
-                                          (concat options (map #(option-of island p' % cost') turns)))]
-                           [options' p' cost'])
-                         (reduced acc))))
-                   [() p cost]
-                   (range 1 (inc max-steps))))))
+  (let [turns (turn90 (:dir option))]
+    (->> (walk-from-option island option)
+         (take max-steps)
+         (drop (dec min-steps))
+         (mapcat (fn [opt] (map #(assoc opt :dir %) turns))))))
 ```
 
-This is definitely the most complicated function, but it's still not that bad, as it's just a single `reduce` call.
-The input we're feeding through is the range of steps from 1 to the number of steps allowed, so in this case it would
-be `(1 2 3)` or `(range 1 (inc 3))`. The accumulator is a vector of the options we've identified, the last point we
-looked at within the range, and the cost accumulated up to the last point. Then we try to move from the previous point
-in the intended direction, stopping if we've moved out of bounds. If not, we calculate the new cost, and calculate the
-options we could take if we stopped after this number of steps. We concatenate these new options onto the accumulated
-ones, using `(concat options (map #(option-of island p' % cost') turns))` - after moving between 1 and 3 steps, we must
-turn either clockwise or counter-clockwise, so we map each turn onto the new `option-of`. When we're all done and the
-`reduce` returns the accumulator (the 3-tuple), we call `first` to return only the list of new options to consider.
+I originally wrote this as one complicated function, but then decided to break it into two smaller ones. First,
+`walk-from-option` creates a theoretically-infinite list of options we can take from walking in the direction from a
+given `option`. It essentially calls an internal function `next-step` given the previous step's position and cost, 
+calculates what would be the next position and cost (if the next position is still on the island), and generates a
+lazy sequence from that next point through the next ones. Then `move-step-range` calls `walk-from-option`, taking
+`max-steps` for the longest number of steps we're allowed to move, and then `(drop (dec min-steps))` to make sure we
+move at least the minimum number of steps. Finally, since each `option` returned from `walk-from-option` remained in
+the same direction as the original `option`, we must set each option to one of the two directions that `turn90`
+returns, and `mapcat` them to return all possible next options to consider.
 
 With two more helper functions, we're ready to implement `part1`.
 

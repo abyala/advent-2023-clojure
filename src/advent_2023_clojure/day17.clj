@@ -18,20 +18,21 @@
 (defn option-of [island p dir cost]
   {:p p, :dir dir, :cost cost, :estimate (estimate-step island p cost)})
 
+(defn walk-from-option [island option]
+  (let [{:keys [p dir cost]} option]
+    (letfn [(next-step [from-p from-c] (let [p' (move from-p dir)
+                                             cost' (get-in island [:points p'])]
+                                         (when cost'
+                                           (cons (option-of island p' dir (+ from-c cost'))
+                                                 (lazy-seq (next-step p' (+ from-c cost')))))))]
+      (next-step p cost))))
+
 (defn move-step-range [min-steps max-steps island option]
-  (let [{:keys [p dir cost]} option
-        turns (turn90 dir)]
-    (first (reduce (fn [[options prev-p prev-c :as acc] step-num]
-                              (let [p' (move prev-p dir)]
-                                (if-some [cost ((:points island) p')]
-                                  (let [cost' (+ prev-c cost)
-                                        options' (if (< step-num min-steps)
-                                                   options
-                                                   (concat options (map #(option-of island p' % cost') turns)))]
-                                    [options' p' cost'])
-                                  (reduced acc))))
-                            [() p cost]
-                            (range 1 (inc max-steps))))))
+  (let [turns (turn90 (:dir option))]
+    (->> (walk-from-option island option)
+         (take max-steps)
+         (drop (dec min-steps))
+         (mapcat (fn [opt] (map #(assoc opt :dir %) turns))))))
 
 (defn initial-options [island]
   (let [c (fn [opt1 opt2] (compare ((juxt :estimate :cost :p :dir) opt1)
