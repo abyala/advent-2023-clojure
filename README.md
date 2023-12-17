@@ -18,7 +18,7 @@
 | 14    | Parabolic Reflector Dish        | [source](src/advent_2023_clojure/day14.clj)                                                                            | [blog](docs/day14.md) |
 | 15    | Lens Library                    | [source](src/advent_2023_clojure/day15.clj)                                                                            | [blog](docs/day15.md) |
 | 16    | The Floor Will Be Lava          | [source](src/advent_2023_clojure/day16.clj)                                                                            | [blog](docs/day16.md) |
-| 17    |                                 | source                                                                                                                 | blog                  |
+| 17    | Clumsy Crucible                 | [source](src/advent_2023_clojure/day17.clj)                                                                            | [blog](docs/day17.md) |
 | 18    |                                 | source                                                                                                                 | blog                  |
 | 19    |                                 | source                                                                                                                 | blog                  |
 | 20    |                                 | source                                                                                                                 | blog                  |
