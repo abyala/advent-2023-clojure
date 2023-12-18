@@ -176,3 +176,36 @@ this doesn't matter since no value on the right side of the bounding box could b
 couldn't close it further to the right.
 
 So, yeah, there you have it. I'm sure someone else can explain why this works, but it does, so we're going with it!
+
+## Refactoring Part Two with Math
+
+In at least one future puzzle (day 18), we again need to count the number of points enclosed by a closed loop path,
+only then we have very large numbers that we can't manually walk. You can read [that blog post](day18.md) for the
+explanation, but we ended up making some polygon-related functions in the `abyala.advent-utils-clojure.point`
+shared namespace. So I refactored part 2 to leverage almost the same code.
+
+Similar to the `polygon-total-point-count` in that namespace, we implement `polygon-interior-point-count`, leveraging
+both the Shoelace Formula for the area within the path and Pick's Theorem for counting the number of interior points.
+Again, read the other blog post for the background.
+
+```clojure
+(defn polygon-interior-point-count
+  "Calculates the total number of points that lie stricly inside a polygon. The input `vertices` is a sequence of
+  ordered points that define the perimeter of the polygon in a closed loop; if the vertices do not start and end with
+  the same value, the function will close it. The output is the number of points inside the polygon, excluding all
+  points in the perimeter.
+
+  This function makes use of Pick's Theorem."
+  [vertices]
+  (let [area (polygon-area vertices)]
+    (if (pos? area)
+      (- (inc area) (/ (perimeter-length vertices) 2))
+      0)))
+```
+
+With that function in place, we no longer needed `rebind-maze-start` or `num-enclosed-by-line`, and the `part2`
+function became much simpler.
+
+````clojure
+(defn part2 [input] (-> (parse-maze input) loop-path p/polygon-interior-point-count))
+````

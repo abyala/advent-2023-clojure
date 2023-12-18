@@ -1,6 +1,5 @@
 (ns advent-2023-clojure.day10
-  (:require [clojure.set :as set]
-            [abyala.advent-utils-clojure.core :refer :all]
+  (:require [abyala.advent-utils-clojure.core :refer :all]
             [abyala.advent-utils-clojure.point :as p]))
 
 (def north [0 -1])
@@ -35,27 +34,4 @@
       (next-step start nil))))
 
 (defn part1 [input] (-> (parse-maze input) loop-path count (quot 2)))
-
-(defn rebind-maze-start [maze]
-  (let [start (maze-start maze)]
-    (assoc maze start (->> [north south east west]
-                           (filter #(maze (map + start %)))
-                           set
-                           ((set/map-invert connecting-dirs))))))
-
-(defn num-enclosed-by-line [maze points min-x max-x y]
-  (let [flip (fn [v] (if (= v :outside) :inside :outside))]
-    (first (reduce (fn [[n loc :as acc] p]
-                     (let [c (maze p)]
-                       (cond (or (nil? c) (not (points p))) [(if (= loc :inside) (inc n) n) loc]
-                             (#{\L \J \|} c) [n (flip loc)]
-                             :else acc)))
-                   [0 :outside]
-                   (map vector (range min-x max-x) (repeat y))))))
-
-(defn part2 [input]
-  (let [maze (parse-maze input)
-        points (set (loop-path maze))
-        [[x0 y0] [x1 y1]] (p/bounding-box points)
-        maze' (rebind-maze-start maze)]
-    (transduce (map #(num-enclosed-by-line maze' points x0 x1 %)) + (range y0 y1))))
+(defn part2 [input] (-> (parse-maze input) loop-path p/polygon-interior-point-count))

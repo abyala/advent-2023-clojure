@@ -137,3 +137,11 @@ All that's left is our `part2` function and we're done.
 ```
 
 So that's it. In my mind, it's another bad puzzle. Better luck tomorrow.
+
+## Refactoring
+
+Small update - I moved the `shoelace-area` and `total-points-within-path` functions to the
+`abyala.advent-utils-clojure.point` namespace so I could refactor the day 10 solution too. I also renamed
+`shoelace-area` to `polygon-area` because it abstracts the algorithm from the intent of the function. Also, I renamed
+`total-points-within-path` to `polygon-total-point-count` so it would match the naming convention of
+`polygon-area` and day 10's `polygon-interior-point-count` functions.
