@@ -19,7 +19,7 @@
 | 15    | Lens Library                    | [source](src/advent_2023_clojure/day15.clj)                                                                            | [blog](docs/day15.md) |
 | 16    | The Floor Will Be Lava          | [source](src/advent_2023_clojure/day16.clj)                                                                            | [blog](docs/day16.md) |
 | 17    | Clumsy Crucible                 | [source](src/advent_2023_clojure/day17.clj)                                                                            | [blog](docs/day17.md) |
-| 18    |                                 | source                                                                                                                 | blog                  |
+| 18    | Lavaduct Lagoon                 | [source](src/advent_2023_clojure/day18.clj)                                                                            | [blog](docs/day18.md) |
 | 19    |                                 | source                                                                                                                 | blog                  |
 | 20    |                                 | source                                                                                                                 | blog                  |
 | 21    |                                 | source                                                                                                                 | blog                  |
