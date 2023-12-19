@@ -1,12 +1,7 @@
 (ns advent-2023-clojure.day17
-  (:require [abyala.advent-utils-clojure.point :as p]))
+  (:require [abyala.advent-utils-clojure.point :as p :refer [up down left right origin]]))
 
-(def up [0 -1])
-(def down [0 1])
-(def right [1 0])
-(def left [-1 0])
 (defn turn90 [dir] (if (#{up down} dir) [left right] [up down]))
-(defn move [p dir] (mapv + p dir))
 
 (defn parse-input [input]
   (let [points (p/parse-to-char-coords-map (comp parse-long str) input)]
@@ -20,7 +15,7 @@
 
 (defn walk-from-option [island option]
   (let [{:keys [p dir cost]} option]
-    (letfn [(next-step [from-p from-c] (let [p' (move from-p dir)
+    (letfn [(next-step [from-p from-c] (let [p' (p/move from-p dir)
                                              cost' (get-in island [:points p'])]
                                          (when cost'
                                            (cons (option-of island p' dir (+ from-c cost'))
@@ -37,7 +32,7 @@
 (defn initial-options [island]
   (let [c (fn [opt1 opt2] (compare ((juxt :estimate :cost :p :dir) opt1)
                                    ((juxt :estimate :cost :p :dir) opt2)))]
-    (into (sorted-set-by c) (map #(option-of island [0 0] % 0) [right down]))))
+    (into (sorted-set-by c) (map #(option-of island origin % 0) [right down]))))
 
 (defn solve [min-steps max-steps input]
   (let [island (parse-input input)

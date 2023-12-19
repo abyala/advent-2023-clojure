@@ -1,26 +1,21 @@
 (ns advent-2023-clojure.day18
   (:require [clojure.string :as str]
-            [abyala.advent-utils-clojure.point :as p]))
+            [abyala.advent-utils-clojure.point :as p :refer [up down left right origin]]))
 
 (defn parse-line [line]
   (let [[_ dir n _] (re-matches #"(\w{1}) (\d+) .*" line)]
-    [({"U" [0 -1], "D" [0 1], "L" [-1 0], "R" [1 0]} dir) (parse-long n)]))
+    [({"U" up, "D" down, "L" left, "R" right} dir) (parse-long n)]))
 
 (defn parse-line2 [line]
   (let [[_ dist-hex dir-hex] (re-matches #"\w \d+ \(\#(\w{5})(\w)\)" line)]
-    [([[1 0] [0 1] [-1 0] [0 -1]] (parse-long dir-hex)) (Integer/parseInt dist-hex 16)]))
+    [([right up left down] (parse-long dir-hex)) (Integer/parseInt dist-hex 16)]))
 
 (defn parse-instructions [line-parser input]
   (map line-parser (str/split-lines input)))
 
-(defn move-seq [p dir]
-  (let [p' (mapv + p dir)]
-    (cons p' (lazy-seq (move-seq p' dir)))))
-
 (defn all-turns [instructions]
-  (reduce (fn [acc [dir dist]] (conj acc (mapv + (last acc)
-                                                 (mapv * dir (repeat dist)))))
-          [p/origin]
+  (reduce (fn [acc [dir dist]] (conj acc (p/move (last acc) dir dist)))
+          [origin]
           instructions))
 
 (defn solve [parse-fn input]

@@ -5,7 +5,7 @@
 (def down [0 1])
 (def right [1 0])
 (def left [-1 0])
-(defn move [p dir] [(mapv + p dir) dir])
+(defn move [p dir] [(p/move p dir) dir])
 
 (defn next-steps [cave p dir]
   (let [target (cave p)]
@@ -38,5 +38,5 @@
   (let [cave (p/parse-to-char-coords-map input)]
     (transduce (map (fn [[p dir]] (energized-tiles cave p dir))) max 0 (f cave))))
 
-(defn part1 [input] (solve (fn [_] [[[0 0] right]]) input))
+(defn part1 [input] (solve (fn [_] [[p/origin right]]) input))
 (defn part2 [input] (solve starting-options input))

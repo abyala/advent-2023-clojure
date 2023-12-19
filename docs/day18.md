@@ -30,7 +30,7 @@ parsing logic.
 ```clojure
 (defn parse-line [line]
   (let [[_ dir n _] (re-matches #"(\w{1}) (\d+) .*" line)]
-    [({"U" [0 -1], "D" [0 1], "L" [-1 0], "R" [1 0]} dir) (parse-long n)]))
+    [({"U" up, "D" down, "L" left, "R" right} dir) (parse-long n)]))
 
 (defn parse-instructions [line-parser input]
   (map line-parser (str/split-lines input)))
@@ -41,25 +41,27 @@ distance. It returns a vector of `[[dx dy] dist]` where `[dx dy]` is the same pa
 moving up, down, left, or right.  Then `parse-instructions`, expecting to have different parsing instructions later,
 simply maps the `line-parser` function to each line of the input.
 
-Let's keep doing the logic before turning to the math. We'll define the function `move-seq` to return an infinite
-sequence of points moving in a direction from a starting point, which we'll in turn use in `all-turns` to return each
-vertex the digger creates.
+Let's keep doing the logic before turning to the math. We'll define the function `move` in the 
+`abyala.advent-utils-clojure.point` namespace for moving one point in the direction of another `n` number of times.
+We will use this in `all-turns` to return each vertex the digger creates by adding each instruction to the previous
+vertex.
 
 ```clojure
-(defn move-seq [p dir]
-  (let [p' (mapv + p dir)]
-    (cons p' (lazy-seq (move-seq p' dir)))))
+; abyala.advent-utils-clojure.point namespace
+(defn move
+  ([point direction] (mapv + point direction))
+  ([point direction n] (case n 0 point
+                               1 (mapv + point direction)
+                               (mapv + point (map #(* % n) direction)))))
 
 (defn all-turns [instructions]
-  (reduce (fn [acc [dir dist]] (conj acc (mapv + (last acc)
-                                                 (mapv * dir (repeat dist)))))
-          [p/origin]
+  (reduce (fn [acc [dir dist]] (conj acc (p/move (last acc) dir dist)))
+          [origin]
           instructions))
 ```
 
-`move-seq` calls `(mapv + p dir)` to take the point `p` (a vector) and the direction `dir` (another vector), and add
-each pairwise value together, returning a third vector. Then it returns the new point `p'` attached to a lazy sequence
-of the remaining values from recursively calling itself. Then `all-turns` calls `reduce` on each of the parsed
+`move` calls `(mapv + point direction)` to take the `point` (a vector) and the `direction` (another vector), and add
+each pairwise value together, returning a third vector. Then `all-turns` calls `reduce` on each of the parsed
 instructions, and adds the result of moving `dist` steps in the direction `dir`, and adding it to the last step seen.
 As a very important note - we start at the `origin` and return every line segment the digger creates, which means we
 end at the `origin` again. We'll use this assumption to make the next function a tiny bit simpler.
@@ -122,7 +124,7 @@ the hex string.
 ```clojure
 (defn parse-line2 [line]
   (let [[_ dist-hex dir-hex] (re-matches #"\w \d+ \(\#(\w{5})(\w)\)" line)]
-    [([[1 0] [0 1] [-1 0] [0 -1]] (parse-long dir-hex)) (Integer/parseInt dist-hex 16)]))
+    [([right up left down] (parse-long dir-hex)) (Integer/parseInt dist-hex 16)]))
 ```
 
 Once again this is easy with a regex. We skip the first two sections of the input string, and then extract out the

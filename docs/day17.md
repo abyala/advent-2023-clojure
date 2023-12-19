@@ -26,17 +26,13 @@ We are given a grid of numbers, which represent the "heat loss" it takes to move
 from the top-left to the bottom right corner, we need to find the shortest path. However, our method of transportation
 limits requires taking between 1 and 3 steps in a direction before being forced to rotate 90 degrees.
 
-Let's start with some simple utility declarations, some of which looking familiar from the `day16` puzzle. I'm
-considering moving the first four into the `abyala.advent-utils-clojure.point` namespace, except that across Advent
-puzzles, sometimes it makes sense to see `up` as `[0 -1]` and sometimes as `[0 1]`, which is why I keep redefining it.
+Let's start with some simple utility declarations, some of which looking familiar from the `day16` puzzle. I'm reusing
+the `up`, `down`, `left`, and `right` values from the `abyala.advent-utils-clojure.point` namespace, even though it's
+always a little unclear if `up` should be `[0 1]` or `[0 -1]`. I also reuse the `move` function from that namespace,
+even though I only added it after solving day 18.
 
 ```clojure
-(def up [0 -1])
-(def down [0 1])
-(def right [1 0])
-(def left [-1 0])
 (defn turn90 [dir] (if (#{up down} dir) [left right] [up down]))
-(defn move [p dir] (mapv + p dir))
 ```
 
 `turn90` defines how we can turn when we're done taking our 1-3 steps, and again it's nice and Clojurey - if the
@@ -97,7 +93,7 @@ We'll need this to be flexible in part 2.
 ```clojure
 (defn walk-from-option [island option]
   (let [{:keys [p dir cost]} option]
-    (letfn [(next-step [from-p from-c] (let [p' (move from-p dir)
+    (letfn [(next-step [from-p from-c] (let [p' (p/move from-p dir)
                                              cost' (get-in island [:points p'])]
                                          (when cost'
                                            (cons (option-of island p' dir (+ from-c cost'))
@@ -128,7 +124,7 @@ With two more helper functions, we're ready to implement `part1`.
 (defn initial-options [island]
   (let [c (fn [opt1 opt2] (compare ((juxt :estimate :cost :p :dir) opt1)
                                    ((juxt :estimate :cost :p :dir) opt2)))]
-    (into (sorted-set-by c) (map #(option-of island [0 0] % 0) [right down]))))
+    (into (sorted-set-by c) (map #(option-of island origin % 0) [right down]))))
 
 (defn part1 [input]
   (let [island (parse-input input)
