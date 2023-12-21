@@ -22,7 +22,7 @@
 | 18    | Lavaduct Lagoon                 | [source](src/advent_2023_clojure/day18.clj)                                                                                 | [blog](docs/day18.md) |
 | 19    | Aplenty                         | [source](src/advent_2023_clojure/day19.clj)<br/>[alternate solution source](src/advent_2023_clojure/day19_consolidated.clj) | [blog](docs/day19.md) |
 | 20    | Pulse Propagation               | [source](src/advent_2023_clojure/day20.clj)                                                                                 | [blog](docs/day20.md) |
-| 21    |                                 | source                                                                                                                      | blog                  |
+| 21    | Step Counter                    | [source](src/advent_2023_clojure/day21.clj)                                                                                 | [blog](docs/day21.md) |
 | 22    |                                 | source                                                                                                                      | blog                  |
 | 23    |                                 | source                                                                                                                      | blog                  |
 | 24    |                                 | source                                                                                                                      | blog                  |
