@@ -1,7 +1,7 @@
 # Day 21: Step Counter
 
-* [Problem statement](https://adventofcode.com/2123/day/21)
-* [Solution code](https://github.com/abyala/advent-2123-clojure/blob/master/src/advent_2123_clojure/day21.clj)
+* [Problem statement](https://adventofcode.com/2023/day/21)
+* [Solution code](https://github.com/abyala/advent-2023-clojure/blob/master/src/advent_2023_clojure/day21.clj)
 
 ## Intro
 
