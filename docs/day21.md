@@ -92,7 +92,7 @@ In part 1, we don't need any transformation, so `part1-pred` takes in the two ar
 For part 2, since we'll have an infinite-sized garden, we'll call `(mod % size)` on both ordinates of the point to
 transpose the point back onto the original carden and its `garden-plots`.
 
-Now we build 
+Now we build the input string we'll need on a website that does mathematical calculations for you.
 
 ```clojure
 (defn wolfram-alpha-string [input]
