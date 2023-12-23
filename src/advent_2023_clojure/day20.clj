@@ -40,8 +40,7 @@
     [module-map' (send-signals module-map' to (not all-high?))]))
 (defmethod receive-signal :default [module-map from to high?])
 
-(defn push-button
-  [module-map button-target]
+(defn push-button [module-map button-target]
   (loop [signals [{:from "button" :to button-target :high? false}], state module-map, receive-stats {false 0, true 0}]
     (if (seq signals)
       (let [{:keys [from to high?]} (first signals)
