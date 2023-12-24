@@ -24,6 +24,6 @@
 | 20    | Pulse Propagation               | [source](src/advent_2023_clojure/day20.clj)                                                                                 | [blog](docs/day20.md) |
 | 21    | Step Counter                    | [source](src/advent_2023_clojure/day21.clj)                                                                                 | [blog](docs/day21.md) |
 | 22    | Sand Slabs                      | [source](src/advent_2023_clojure/day22.clj)                                                                                 | [blog](docs/day22.md) |
-| 23    |                                 | source                                                                                                                      | blog                  |
+| 23    | A Long Walk                     | [source](src/advent_2023_clojure/day23.clj)                                                                                 | [blog](docs/day23.md) |
 | 24    |                                 | source                                                                                                                      | blog                  |
 | 25    |                                 | source                                                                                                                      | blog                  |
