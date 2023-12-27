@@ -95,20 +95,14 @@ So now we're ready to do the last part of `part1` - we pair together every uniqu
 how many combinations cross.
 
 ```clojure
-(defn all-line-pairs [lines]
-  (for [line1 lines
-        line2 (drop-until #(= % line1) lines)]
-    [line1 line2]))
-
 (defn part1 [low high input]
   (count-when (fn [[line1 line2]] (cross-in-boundary? line1 line2 low high))
-              (all-line-pairs (parse-input input))))
+              (unique-combinations (parse-input input))))
 ```
 
-`all-line-pairs` creates the list of combinations of lines. I could have used the lines as a vector and worked with
-vector index ranges, but I thought this would be easier to understand. We use `for` list comprehension on all the
-lines for `line1`, and then call `drop-until` to remove all lines up to _and including_ `line1` to find the rest. I
-suppose this would have broken if we had had two identical hailstones of the exact same values, but that didn't happen.
+Originally, part1 used a function called `all-line-pairs` to pair together the elements in a collection, but then I
+implemented `unique-combinations` in the `abyala.advent-utils-clojure.core` namespace, so that's what `part1` ends up
+using instead.
 
 Then `part1` looks over all line pairs of the parsed input, and checks if `cross-in-boundary?` passes for the two
 lines within their given `low` and `high` values, as specified by the test case.

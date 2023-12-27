@@ -25,14 +25,9 @@
          (= (signum (:dx line1)) (signum (- x (:px line1))))
          (= (signum (:dx line2)) (signum (- x (:px line2)))))))
 
-(defn all-line-pairs [lines]
-  (for [line1 lines
-        line2 (drop-until #(= % line1) lines)]
-    [line1 line2]))
-
 (defn part1 [low high input]
   (count-when (fn [[line1 line2]] (cross-in-boundary? line1 line2 low high))
-              (all-line-pairs (parse-input input))))
+              (unique-combinations (parse-input input))))
 
 (defn part2 [input]
   (println "var('t0', 't1', 't2', 'x', 'y', 'z', 'vx', 'vy', 'vz')\na = solve([")
