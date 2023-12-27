@@ -26,4 +26,4 @@
 | 22    | Sand Slabs                      | [source](src/advent_2023_clojure/day22.clj)                                                                                 | [blog](docs/day22.md) |
 | 23    | A Long Walk                     | [source](src/advent_2023_clojure/day23.clj)                                                                                 | [blog](docs/day23.md) |
 | 24    | Never Tell Me The Odds          | [source](src/advent_2023_clojure/day24.clj)                                                                                 | [blog](docs/day24.md) |
-| 25    |                                 | source                                                                                                                      | blog                  |
+| 25    | Snowverload                     | [source](src/advent_2023_clojure/day25.clj)                                                                                 | [blog](docs/day25.md) |
